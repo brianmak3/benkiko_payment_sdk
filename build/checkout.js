@@ -31,11 +31,6 @@ function BenkikoCheckout(data) {
    localStorage.setItem('callback', data.callback)
 
 }
- function AlertFn(){
-     alert(localStorage.getItem('callback'))
-     //alert(myTest)
-}
-
 
 
 
