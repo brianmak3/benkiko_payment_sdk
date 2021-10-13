@@ -26,7 +26,7 @@ function BenkikoCheckout(data) {
 
     var encodedString = Base64.encode(updatedParams);
 
-    //window.open(`http://192.168.100.8:3001?data=${encodedString}`, '_blank');
+    // window.open(`http://192.168.100.8:3003?data=${encodedString}`, '_blank');
     window.open(`https://payment.benkiko.africa?data=${encodedString}`, '_blank');
 
    localStorage.setItem('callback', data.callback)
