@@ -49,7 +49,7 @@ const encKey = "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIIC
     crypt = new Crypt();
     const env = 'Production',
       env0 = 'Development',
-      url = env === 'Production'?'https://payment.benkiko.africa':'http://192.168.100.198:3003'
+      url = env === 'Production'?'https://payment.benkiko.io/':'http://192.168.100.198:3003'
 function BenkikoCheckout(data) {
     const params = crypt.encrypt(encKey, JSON.stringify(data));
     updatedParams = params.replace(/:/g, "*");
