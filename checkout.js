@@ -4,13 +4,12 @@ var Base64 = { _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz012
 
 let socketId = Date.now() + '_slog'
 function connect() {
-    var ws = new WebSocket("ws://192.168.100.198:3001");
+    var ws = new WebSocket('wss://benkiko.io' /*"ws://192.168.100.198:3001"*/);
     ws.onopen = function () {
         // subscribe to some channels
         ws.send(JSON.stringify({ userId: socketId, action: "saveUserOnline" }));
     }
     ws.onmessage = function (e) {
-        // alert('cool')
         window.dispatchEvent(new CustomEvent('home', { detail: e.data }))
     };
 
@@ -45,28 +44,26 @@ function CallChild(fn, user) {
 
 
 }
-const encKey = "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAuNbnxm4wEq23siw3kNLT\nEyacZ5c6sWTeayN/KrS3ZeVs3Cy2e1g5C+S36iynKAb29EZ15rTol2By0hfTApAz\ni4Ketu2BMxUM00xWMq6tZqNf3s41+vNPVF7BVA93AKunHqQW+WNLllLUR40klQxH\nCUnHchsrxQZve60nb3ANQb0d4rCyH9iGaoeSNDHiMqH5+1D25hh+j9C4EgU2nK18\nDhPEso6EjVuCIbgOZmAdGu2TZKV0A8vcfiaW8O3dsror4oreeXIBTRQdwbPWEfbn\npngFZk0/AOHRq94VW2G1QbgBWArt5aZU4josQc10373xw/9sea6ewTIDVlGvoUg0\n/ALyVsl3w6aQqJSYLocjBjAKX8IzbdIBxqHGLIcLK1xCntBLckdDtoWyHIvdQ1zn\nw9H6srVPrAapn6GYFCbHgNctRNQkcvV8KsusLGthICSy0b8XRKCg0hNj2GvddZU0\nXpLwFjBBYFG4w0cRhIKS9vzh01YtZyx5k2f/Qtr1lsdCnzKlcMzDGl1+UFY/QhiT\nFtcxVSYa/UZnJy4oDGR3oQ4p9uN2xK6D8gFv6GrY5Zq+QFJZkqfCoTZVtYM7F3U8\n0Z4+t23mZdUGZbAOIwue329lmSCR/1WYj3yxyfhCk8gxyUmywsNpueoAd6VwVTD6\nWHP1Wz2h0q0ajchHVZA4CCMCAwEAAQ==\n-----END PUBLIC KEY-----",
-    const env = 'Production',
-      env0 = 'Development',
-      url = env === 'Production'?'https://payment.benkiko.io/':'http://192.168.100.198:3003'
+const encKey = "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAuNbnxm4wEq23siw3kNLT\nEyacZ5c6sWTeayN/KrS3ZeVs3Cy2e1g5C+S36iynKAb29EZ15rTol2By0hfTApAz\ni4Ketu2BMxUM00xWMq6tZqNf3s41+vNPVF7BVA93AKunHqQW+WNLllLUR40klQxH\nCUnHchsrxQZve60nb3ANQb0d4rCyH9iGaoeSNDHiMqH5+1D25hh+j9C4EgU2nK18\nDhPEso6EjVuCIbgOZmAdGu2TZKV0A8vcfiaW8O3dsror4oreeXIBTRQdwbPWEfbn\npngFZk0/AOHRq94VW2G1QbgBWArt5aZU4josQc10373xw/9sea6ewTIDVlGvoUg0\n/ALyVsl3w6aQqJSYLocjBjAKX8IzbdIBxqHGLIcLK1xCntBLckdDtoWyHIvdQ1zn\nw9H6srVPrAapn6GYFCbHgNctRNQkcvV8KsusLGthICSy0b8XRKCg0hNj2GvddZU0\nXpLwFjBBYFG4w0cRhIKS9vzh01YtZyx5k2f/Qtr1lsdCnzKlcMzDGl1+UFY/QhiT\nFtcxVSYa/UZnJy4oDGR3oQ4p9uN2xK6D8gFv6GrY5Zq+QFJZkqfCoTZVtYM7F3U8\n0Z4+t23mZdUGZbAOIwue329lmSCR/1WYj3yxyfhCk8gxyUmywsNpueoAd6VwVTD6\nWHP1Wz2h0q0ajchHVZA4CCMCAwEAAQ==\n-----END PUBLIC KEY-----";
+const crypt = new Crypt();
+const env = 'Production',
+    env0 = 'Development',
+    url = env === 'Production' ? 'https://payment.benkiko.io/' : 'http://192.168.100.198:3003'
 function BenkikoCheckout(data) {
-    const crypt = new Crypt();
-    const params = crypt.encrypt(encKey, JSON.stringify(data));
-    updatedParams = params.replace(/:/g, "*");
+    const params = crypt.encrypt(encKey, JSON.stringify(data)),
+        updatedParams = params.replace(/:/g, "*");
     var encodedString = Base64.encode(updatedParams);
     popupwindow(`${url}?data=${encodedString}&socketId=${socketId}`, 'Benkiko Pay', 550, 700)
     localStorage.setItem('callback', data.callback)
 
 }
 function LoginWithBenkiko({ callback, access_key }) {
-    
-    const crypt = new Crypt();
     const params = crypt.encrypt(encKey, JSON.stringify({
         callback: callback.toString(),
         userAction: 'login',
         access_key
-    }));
-    updatedParams = params.replace(/:/g, "*");
+    })),
+        updatedParams = params.replace(/:/g, "*");
     var encodedString = Base64.encode(updatedParams);
     popupwindow(`${url}/login?data=${encodedString}&socketId=${socketId}`, 'Login With Benkiko', 550, 700)
     // "Ratting", "width=550,height=700,left=150,top=200,toolbar=0,status=0,");
@@ -76,7 +73,6 @@ function popupwindow(url, title, w, h) {
     var top = (screen.height / 2) - (h / 2);
     return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
 }
-
 
 
 
