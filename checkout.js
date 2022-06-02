@@ -4,8 +4,8 @@ var Base64 = { _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz012
 
 let socketId = Date.now() + '_slog'
 function connect() {
-    var ws = new WebSocket("ws://192.168.100.198:3001");
-    // // var ws = new WebSocket('wss://benkiko.io');
+    // var ws = new WebSocket("ws://192.168.100.198:3001");
+    var ws = new WebSocket('wss://benkiko.io');
     ws.onopen = function () {
         // subscribe to some channels
         ws.send(JSON.stringify({ userId: socketId, action: "saveUserOnline" }));
