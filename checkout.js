@@ -4,13 +4,15 @@ var Base64 = { _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz012
 
 let socketId = Date.now() + '_slog'
 function connect() {
-    var ws = new WebSocket('wss://benkiko.io' /*"ws://192.168.100.198:3001"*/);
+    var ws = new WebSocket("ws://192.168.100.198:3001");
+    // // var ws = new WebSocket('wss://benkiko.io');
     ws.onopen = function () {
         // subscribe to some channels
         ws.send(JSON.stringify({ userId: socketId, action: "saveUserOnline" }));
     }
     ws.onmessage = function (e) {
         window.dispatchEvent(new CustomEvent('home', { detail: e.data }))
+        // window.close()
     };
 
     ws.onclose = function (e) {
@@ -24,6 +26,7 @@ function connect() {
         console.error('Socket encountered error: ', err.message, 'Closing socket');
         ws.close();
     };
+
 }
 connect();
 // function CallParent() {
@@ -54,7 +57,6 @@ function BenkikoCheckout(data) {
         updatedParams = params.replace(/:/g, "*");
     var encodedString = Base64.encode(updatedParams);
     popupwindow(`${url}?data=${encodedString}&socketId=${socketId}`, 'Benkiko Pay', 550, 700)
-    localStorage.setItem('callback', data.callback)
 
 }
 function LoginWithBenkiko({ callback, access_key }) {
